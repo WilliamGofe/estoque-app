@@ -1,10 +1,15 @@
-import * as dotenv from "dotenv" ;
-import app from "./app";
+import express from "express";
+import cors from "cors";
+import userRoutes from "./routes/userRoutes";
+import stockRoutes from "./routes/stockRoutes";
 
-dotenv.config();
+const app = express();
+app.use(cors());
+app.use(express.json());
 
-const PORT = process.env.PORT || 4000;
+app.use("/users", userRoutes);
+app.use("/stock", stockRoutes);
 
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando na porta ${PORT}`);
+app.listen(4000, () => {
+  console.log("Servidor rodando em http://localhost:4000");
 });

@@ -6,7 +6,7 @@ const getStockMovements = async (req: Request, res: Response) => {
     const movements = await stockService.getAll();
     res.json(movements);
   } catch (error) {
-    res.status(500).json({ error: "Erro ao buscar movimentações de estoque" });
+    res.status(500).json({ error: "Erro ao buscar movimentações" });
   }
 };
 
@@ -16,7 +16,7 @@ const createStockMovement = async (req: Request, res: Response) => {
     const movement = await stockService.create({ product_id, user_id, type, quantity });
     res.status(201).json(movement);
   } catch (error) {
-    res.status(500).json({ error: "Erro ao criar movimentação de estoque" });
+    res.status(500).json({ error: "Erro ao criar movimentação" });
   }
 };
 

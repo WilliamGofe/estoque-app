@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import * as userService from "../services/userService";
 
-export const getUsers = async (req: Request, res: Response) => {
+const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await userService.getAll();
     res.json(users);
@@ -10,12 +10,14 @@ export const getUsers = async (req: Request, res: Response) => {
   }
 };
 
-export const createUser = async (req: Request, res: Response) => {
+const createUser = async (req: Request, res: Response) => {
   try {
-    const { name, email } = req.body;
-    const user = await userService.create({ name, email });
+    const { name, email, password } = req.body;
+    const user = await userService.create({ name, email, password });
     res.status(201).json(user);
   } catch (error) {
     res.status(500).json({ error: "Erro ao criar usuário" });
   }
 };
+
+export { getUsers, createUser };
