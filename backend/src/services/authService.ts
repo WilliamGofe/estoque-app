@@ -1,7 +1,16 @@
 import db from "../config/db";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { jwtConfig } from "../config/jwt";
+import jwt, { Secret } from "jsonwebtoken";
+import { RowDataPacket } from "mysql2";
+
+// Define um tipo para os dados do usuário do banco de dados para melhor segurança de tipo.
+interface UserData extends RowDataPacket {
+  id: number;
+  name: string;
+  email: string;
+  password: string; // Esta coluna armazena a senha com hash.
+}
+
 
  const register = async (name: string, email: string, password: string) => {
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -12,8 +21,11 @@ import { jwtConfig } from "../config/jwt";
   return result;
 };
 
- const login = async ( email: string, password: string) => {
-  const [rows]: any = await db.execute(
+const login = async (email: string, password: string) => {
+
+  const JWT_SECRET: Secret = process.env.JWT_SECRET || "secretKey"; 
+
+  const [rows] = await db.execute<UserData[]>(
     "SELECT * FROM users WHERE email = ? LIMIT 1",
     [email]
   );
@@ -22,19 +34,18 @@ import { jwtConfig } from "../config/jwt";
   if (!user) {
     throw new Error("Usuário não encontrado");
   }
-  console.log(user.password);
-  console.log(password)
+
   const isPasswordValid = await bcrypt.compare(password, user.password);
-  console.log(isPasswordValid)
+
   if (!isPasswordValid) {
     throw new Error("Senha inválida");
   }
 
-  const token = jwt.sign(
-    { id: user.id, email: user.email }, 
-    jwtConfig.secret, 
-    { expiresIn: jwtConfig.expiresIn } 
-  );
+    const token = jwt.sign(
+    { id: user.id, email: user.email },
+    JWT_SECRET,
+    { expiresIn: Number(process.env.JWT_EXPIRES_IN) || 3600 }
+    );
 
   return {
     user: {

@@ -12,12 +12,11 @@ const getProducts = async (req: Request, res: Response) => {
 
 const createProduct = async (req: Request, res: Response) => {
   try {
-    const { name, quantity } = req.body;
-    const product = await productService.create({ name, quantity });
-    res.status(201).json(product);
-  } catch (error) {
-    res.status(500).json({ error: "Erro ao criar produto" });
-  }
+      const product = await productService.create(req.body);
+      res.status(201).json(product);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
 };
 
 const deleteProduct = async (req: Request, res: Response) => {

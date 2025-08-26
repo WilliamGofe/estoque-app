@@ -7,13 +7,27 @@ interface Product {
   min_quantity?: number;
 }
 
+export const isProductTaken = async (name: string, sku?: string): Promise<boolean> => {
+  let query = "SELECT id FROM products WHERE name = ?";
+  const params: any[] = [name];
+
+  if (sku) {
+    query += " OR sku = ?";
+    params.push(sku);
+  }
+
+  const [rows] = await pool.execute(query, params);
+  return (rows as any).length > 0;
+};
+
  const getAll = async () => {
   const [rows] = await pool.query("SELECT * FROM products");
   return rows;
 };
 
  const create = async (product: Product) => {
-  const { name, quantity } = product;
+    const { name, quantity } = product;
+
   const [result] = await pool.query(
     "INSERT INTO products (name, quantity) VALUES (?, ?)",
     [name, quantity]
