@@ -3,12 +3,12 @@ import bcrypt from "bcrypt";
 import jwt, { Secret } from "jsonwebtoken";
 import { RowDataPacket } from "mysql2";
 
-// Define um tipo para os dados do usuário do banco de dados para melhor segurança de tipo.
+
 interface UserData extends RowDataPacket {
   id: number;
   name: string;
   email: string;
-  password: string; // Esta coluna armazena a senha com hash.
+  password: string;
 }
 
 

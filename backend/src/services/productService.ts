@@ -25,6 +25,11 @@ export const isProductTaken = async (name: string, sku?: string): Promise<boolea
   return rows;
 };
 
+ const getById = async (id:number) => {
+  const [rows] = await pool.query("SELECT FROM products WHERE id = ?", [id]);
+  return rows;
+};
+
  const create = async (product: Product) => {
     const { name, quantity } = product;
 
@@ -81,4 +86,4 @@ const deleteProduct = async (id: number) => {
   return result;
 };
 
-export { getAll, create, updateProduct, deleteProduct };
+export { getAll, create, updateProduct, deleteProduct, getById };

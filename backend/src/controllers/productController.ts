@@ -10,6 +10,16 @@ const getProducts = async (req: Request, res: Response) => {
   }
 };
 
+const getProductById = async (req: Request, res: Response) => {
+  try {
+    const id = Number(req.params.id);
+    const products = await productService.getById(id);
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ error: "Erro ao buscar produtos" }); 
+  }
+};
+
 const createProduct = async (req: Request, res: Response) => {
   try {
       const product = await productService.create(req.body);
@@ -64,4 +74,4 @@ const updateProduct = async (req: Request, res: Response) => {
   }
 };
 
-export { getProducts, createProduct, deleteProduct, updateProduct };
+export { getProducts, createProduct, deleteProduct, updateProduct, getProductById };
